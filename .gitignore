@@ -1,0 +1,16 @@
+.DS_Store
+
+# Local assistant/editor settings
+.claude/settings.local.json
+
+# Common editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Local logs and temp files
+*.log
+tmp/
+temp/

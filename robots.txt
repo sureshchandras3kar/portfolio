@@ -1,0 +1,30 @@
+# Block common AI data scrapers and LLM training bots
+User-agent: CCBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: OmgiliBot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+# Allow standard search engines to index the site,
+# but prevent ALL bots from downloading the personal resume document folder.
+User-agent: *
+Disallow: /documents/
+Allow: /
