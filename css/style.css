@@ -257,14 +257,20 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 600; }
 }
 
 .nav-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.35rem;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: #06b6d4;
-  letter-spacing: 0.06em;
   transition: opacity var(--transition);
 }
 .nav-logo:hover { opacity: 0.8; }
+.nav-logo-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  color: var(--text);
+}
 
 .nav-links {
   display: flex;
