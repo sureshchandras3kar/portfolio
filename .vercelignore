@@ -1,0 +1,16 @@
+# Exclude huge directories and local dependencies from Vercel deployments
+.vercel
+.git
+.gemini
+.vscode
+.idea
+__pycache__
+venv/
+env/
+node_modules/
+
+# Exclude local test and scratch files
+test/
+tests/
+scratch*
+*.log
