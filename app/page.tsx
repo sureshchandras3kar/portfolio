@@ -573,7 +573,7 @@ export default function Home() {
               <div className="edu-content">
                 <h3>Bachelor of Engineering — Computer Science & Engineering</h3>
                 <p className="edu-institution">T.J.S. Engineering College, Tamil Nadu (Anna University)</p>
-                <p className="edu-meta">2014 – 2018 · CGPA: 6.8</p>
+                <p className="edu-meta">2014 – 2018</p>
               </div>
             </div>
           </div>
