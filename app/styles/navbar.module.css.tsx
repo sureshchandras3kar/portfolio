@@ -1,3 +1,2 @@
-// This file is intentionally left as a type stub.
-// The actual styles are provided by navbar.module.css
-export {};
+declare const styles: { readonly [className: string]: string };
+export default styles;

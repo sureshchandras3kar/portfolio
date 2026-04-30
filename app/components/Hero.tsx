@@ -72,6 +72,7 @@ export default function Hero() {
             role="status"
             aria-live="polite"
             aria-atomic="true"
+            aria-label={typedText ? `I specialize in: ${typedText}` : 'Specialization loading'}
           >
             {typedText}
           </span>
