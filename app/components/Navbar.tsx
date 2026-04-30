@@ -35,6 +35,11 @@ export default function Navbar() {
     setIsMobileOpen(false);
   };
 
+  /* Issue #20: Close mobile nav on backdrop click */
+  const handleBackdropClick = () => {
+    setIsMobileOpen(false);
+  };
+
   const filteredNav = portfolioData?.nav?.filter((item) => item?.href !== '#blog');
 
   return (
@@ -75,6 +80,13 @@ export default function Navbar() {
           <span></span>
         </button>
 
+        {/* Issue #20: Backdrop overlay — tap to close mobile nav */}
+        <div
+          className={`${styles?.navBackdrop} ${isMobileOpen ? styles?.open : ''}`}
+          onClick={handleBackdropClick}
+          aria-hidden="true"
+        />
+
         <ul
           className={`${styles?.navLinks} ${isMobileOpen ? styles?.open : ''}`}
           role="list"
@@ -96,8 +108,6 @@ export default function Navbar() {
             );
           })}
         </ul>
-
-        <span className={styles?.navIndicator} aria-hidden="true"></span>
       </div>
     </nav>
   );

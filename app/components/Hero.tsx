@@ -64,7 +64,9 @@ export default function Hero() {
           {portfolioData?.hero?.intro}
         </p>
 
+        {/* Issue #2: Added prefix label before typed text */}
         <p className={`${styles?.heroTagline} ${styles?.animateFadeUp}`}>
+          <span className={styles?.heroTaglinePrefix} aria-hidden="true">→</span>
           <span
             id="typed-text"
             role="status"

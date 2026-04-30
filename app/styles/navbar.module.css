@@ -63,25 +63,32 @@
   color: var(--text-muted, #94a3b8);
   transition: color var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
   letter-spacing: 0.02em;
+  padding-bottom: 4px;
 }
 
-.navLinks a:hover,
+.navLinks a:hover {
+  color: #06b6d4;
+}
+
+/* Issue #13: Active link with underline pill indicator */
 .navLinks a.active {
   color: #06b6d4;
 }
 
-.navIndicator {
+.navLinks a.active::after {
+  content: '';
   position: absolute;
+  bottom: -4px;
   left: 0;
-  bottom: 10px;
-  width: 0;
+  right: 0;
   height: 2px;
   border-radius: 999px;
   background: linear-gradient(90deg, #67e8f9 0%, #06b6d4 100%);
-  opacity: 0;
-  transition: opacity var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1)),
-    width var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1)),
-    transform var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* Issue #12: navIndicator — hide since we use per-link underline instead */
+.navIndicator {
+  display: none;
 }
 
 .navHamburger {
@@ -93,6 +100,7 @@
   cursor: pointer;
   padding: 8px;
   margin-right: -8px;
+  z-index: 101;
 }
 
 .navHamburger span {
@@ -115,9 +123,33 @@
   transform: rotate(-45deg) translate(8px, -8px);
 }
 
+/* Issue #20: Mobile nav backdrop overlay for tap-to-close */
+.navBackdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  top: var(--nav-h, 68px);
+  background: rgba(9, 9, 15, 0.6);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
+}
+
 @media (max-width: 768px) {
   .navHamburger {
     display: flex;
+  }
+
+  .navBackdrop {
+    display: block;
+  }
+
+  .navBackdrop.open {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .navLinks {
@@ -134,6 +166,7 @@
     overflow-y: auto;
     transform: translateX(-100%);
     transition: transform var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
+    z-index: 100;
   }
 
   .navLinks.open {
@@ -149,7 +182,7 @@
     font-size: 1rem;
   }
 
-  .navIndicator {
+  .navLinks a.active::after {
     display: none;
   }
 }
