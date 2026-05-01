@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { portfolioData } from '@/app/data/portfolio';
-import styles from '@/app/styles/navbar.module.css';
+import styles from '../styles/navbar.module.css';
+
+const NAV_SECTIONS = portfolioData?.nav?.filter((item) => item?.href !== '#blog')?.map((item) => item?.href?.replace('#', ''));
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,9 +14,20 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
+
+      const scrollY = window.scrollY + 100;
+      let current = 'hero';
+      for (const id of NAV_SECTIONS) {
+        const el = document.getElementById(id);
+        if (el && el?.offsetTop <= scrollY) {
+          current = id;
+        }
+      }
+      setActiveSection(current);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -22,15 +35,22 @@ export default function Navbar() {
     setIsMobileOpen(false);
   };
 
+  /* Issue #20: Close mobile nav on backdrop click */
+  const handleBackdropClick = () => {
+    setIsMobileOpen(false);
+  };
+
+  const filteredNav = portfolioData?.nav?.filter((item) => item?.href !== '#blog');
+
   return (
     <nav
-      className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}
+      className={`${styles?.navbar} ${isScrolled ? styles?.scrolled : ''}`}
       aria-label="Main navigation"
     >
-      <div className={styles.navInner}>
+      <div className={styles?.navInner}>
         <a
           href="#hero"
-          className={styles.navLogo}
+          className={styles?.navLogo}
           aria-label="Suresh Chandra Sekar — back to top"
         >
           <svg
@@ -46,11 +66,11 @@ export default function Navbar() {
             <polyline points="4 17 10 11 4 5"></polyline>
             <line x1="12" y1="19" x2="20" y2="19"></line>
           </svg>
-          <span className={styles.navLogoText}>suresh_</span>
+          <span className={styles?.navLogoText}>suresh_</span>
         </a>
 
         <button
-          className={styles.navHamburger}
+          className={`${styles?.navHamburger} ${isMobileOpen ? styles?.open : ''}`}
           onClick={() => setIsMobileOpen(!isMobileOpen)}
           aria-label="Toggle navigation menu"
           aria-expanded={isMobileOpen}
@@ -60,20 +80,34 @@ export default function Navbar() {
           <span></span>
         </button>
 
+        {/* Issue #20: Backdrop overlay — tap to close mobile nav */}
+        <div
+          className={`${styles?.navBackdrop} ${isMobileOpen ? styles?.open : ''}`}
+          onClick={handleBackdropClick}
+          aria-hidden="true"
+        />
+
         <ul
-          className={`${styles.navLinks} ${isMobileOpen ? styles.open : ''}`}
+          className={`${styles?.navLinks} ${isMobileOpen ? styles?.open : ''}`}
           role="list"
         >
-          {portfolioData.nav.map((item) => (
-            <li key={item.href}>
-              <a href={item.href} onClick={handleNavClick}>
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {filteredNav?.map((item) => {
+            const sectionId = item?.href?.replace('#', '');
+            const isActive = activeSection === sectionId;
+            return (
+              <li key={item?.href}>
+                <a
+                  href={item?.href}
+                  onClick={handleNavClick}
+                  className={isActive ? styles?.active : ''}
+                  aria-current={isActive ? 'true' : undefined}
+                >
+                  {item?.label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
-
-        <span className={styles.navIndicator} aria-hidden="true"></span>
       </div>
     </nav>
   );

@@ -9,10 +9,24 @@
 
 .section {
   padding: 96px 0;
+  position: relative;
 }
 
 .sectionAlt {
   background: var(--bg-alt, #1a1f3a);
+}
+
+/* Issue #19: Section transition dividers */
+.section::after,
+.sectionAlt::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(6, 182, 212, 0.15) 30%, rgba(6, 182, 212, 0.15) 70%, transparent 100%);
+  pointer-events: none;
 }
 
 .sectionHeader {
@@ -178,6 +192,7 @@
   max-width: 680px;
 }
 
+/* Issue #2: heroTagline with prefix label */
 .heroTagline {
   font-size: 1rem;
   font-weight: 500;
@@ -187,6 +202,14 @@
   align-items: center;
   gap: 8px;
   min-height: 28px;
+}
+
+.heroTaglinePrefix {
+  color: #06b6d4;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
 }
 
 .cursor {
@@ -199,13 +222,13 @@
   50%, 100% { opacity: 0; }
 }
 
+/* Issue #1: heroProof margin conflict fix — use margin-bottom only, no margin:0 override */
 .heroProof {
   display: flex;
   gap: 24px;
   margin-bottom: 32px;
   flex-wrap: wrap;
   list-style: none;
-  margin: 0;
   padding: 0;
 }
 
@@ -232,6 +255,92 @@
   align-items: center;
   gap: 20px;
   flex-wrap: wrap;
+}
+
+/* Scroll cue */
+.scrollCue {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: #06b6d4;
+  text-decoration: none;
+  animation: scroll-bounce 2s ease-in-out infinite;
+  transition: background var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
+  z-index: 10;
+}
+
+.scrollCue:hover {
+  background: rgba(6, 182, 212, 0.1);
+}
+
+.scrollCue:focus-visible {
+  outline: 3px solid #22d3ee;
+  outline-offset: 3px;
+  background: rgba(6, 182, 212, 0.1);
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+
+/* Back to top button */
+.backToTop {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #06b6d4;
+  color: #0f172a;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
+  transition: opacity var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1)),
+    transform var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1)),
+    background var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+}
+
+.backToTop.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.backToTop:hover {
+  background: #22d3ee;
+  transform: translateY(-2px);
+}
+
+.backToTop:focus-visible {
+  outline: 3px solid #22d3ee;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.25), 0 4px 16px rgba(6, 182, 212, 0.35);
+}
+
+@media (max-width: 480px) {
+  .backToTop {
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .btn {
@@ -343,12 +452,25 @@
   position: relative;
 }
 
+/* Issue #17: photoFrame with cyan accent border/glow */
 .photoFrame {
   position: relative;
   border-radius: 12px;
   overflow: hidden;
   background: var(--surface, #1e2847);
   aspect-ratio: 3 / 4;
+  border: 2px solid rgba(6, 182, 212, 0.35);
+  box-shadow: 0 0 32px rgba(6, 182, 212, 0.15), 0 0 0 1px rgba(6, 182, 212, 0.1);
+}
+
+.photoFrame::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, transparent 50%, rgba(34, 211, 238, 0.1) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .profileImg {
@@ -369,6 +491,7 @@
   color: var(--text-soft, #cbd5e1);
 }
 
+/* Issue #18: detailGrid last item — use 2-col but last item spans full if odd */
 .detailGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -379,6 +502,11 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+/* Make last item span full width when it would be alone */
+.detailItem:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .detailLabel {
@@ -404,27 +532,51 @@
   .detailGrid {
     grid-template-columns: 1fr;
   }
+
+  .detailItem:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
 }
 
 /* =============================================
    SKILLS SECTION
    ============================================= */
+/* Issue #4: Two-tier skills layout — core groups prominent, supporting smaller */
 .skillsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 40px;
 }
 
+/* Core skill groups (first 3) get a subtle elevated treatment */
 .skillGroup {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
+.skillGroupCore {
+  background: rgba(6, 182, 212, 0.04);
+  border: 1px solid rgba(6, 182, 212, 0.12);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.skillGroupSupporting {
+  opacity: 0.85;
+}
+
 .skillGroupTitle {
   font-size: 1rem;
   font-weight: 600;
   color: var(--text, #ffffff);
+  margin: 0;
+}
+
+.skillGroupCoreTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #22d3ee;
   margin: 0;
 }
 
@@ -449,16 +601,20 @@
   border: 1px solid rgba(6, 182, 212, 0.2);
 }
 
+/* Issue #3: Primary skills clearly stand out with stronger visual treatment */
 .skillTagPrimary {
-  background: rgba(6, 182, 212, 0.15);
+  background: rgba(6, 182, 212, 0.18);
   color: #22d3ee;
-  border-color: rgba(6, 182, 212, 0.3);
+  border-color: rgba(6, 182, 212, 0.45);
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.12);
 }
 
 .skillTagDim {
-  background: rgba(6, 182, 212, 0.08);
+  background: rgba(6, 182, 212, 0.05);
   color: var(--text-muted, #94a3b8);
-  border-color: rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.1);
+  font-size: 0.8rem;
 }
 
 /* =============================================
@@ -477,8 +633,22 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(180deg, #06b6d4 0%, transparent 100%);
+  background: linear-gradient(180deg, #06b6d4 0%, rgba(6, 182, 212, 0.3) 80%, transparent 100%);
   pointer-events: none;
+}
+
+/* Issue #8: Timeline end cap */
+.timelineProgress::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(6, 182, 212, 0.4);
+  border: 1px solid rgba(6, 182, 212, 0.6);
 }
 
 .timelineItem {
@@ -583,6 +753,7 @@
   gap: 32px;
 }
 
+/* Issue #6: Reordered card — title first, then org, then tech tags, then desc */
 .projectCard {
   background: rgba(6, 182, 212, 0.05);
   border: 1px solid rgba(6, 182, 212, 0.15);
@@ -592,12 +763,15 @@
   flex-direction: column;
   gap: 16px;
   transition: transform var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1)),
-    background var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
+    background var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
+  cursor: pointer;
 }
 
 .projectCard:hover {
   transform: translateY(-4px);
   background: rgba(6, 182, 212, 0.08);
+  border-color: rgba(6, 182, 212, 0.3);
 }
 
 .projectHeader {
@@ -646,6 +820,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1;
 }
 
 .projectDesc li {
@@ -663,14 +838,35 @@
   color: #06b6d4;
 }
 
+/* Issue #5: Project card CTA affordance */
+.projectCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #06b6d4;
+  letter-spacing: 0.02em;
+  transition: gap var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1)),
+    color var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.projectCard:hover .projectCta {
+  gap: 10px;
+  color: #22d3ee;
+}
+
 /* =============================================
    EDUCATION SECTION
    ============================================= */
+/* Issue #14: Degree card — constrained width, not full-width */
 .eduGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
   margin-bottom: 52px;
+  max-width: 640px;
 }
 
 .eduCard {
@@ -678,6 +874,7 @@
   border: 1px solid rgba(6, 182, 212, 0.15);
   border-radius: 12px;
   padding: 28px;
+  border-left: 3px solid #06b6d4;
 }
 
 .eduContent h3 {
@@ -706,9 +903,10 @@
   margin-bottom: 28px;
 }
 
+/* Issue #15: Certifications as card-style layout */
 .certsGrid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
   list-style: none;
   margin: 0;
@@ -718,28 +916,33 @@
 .certCard {
   display: flex;
   gap: 16px;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(6, 182, 212, 0.1);
+  padding: 20px 20px 20px 24px;
+  background: rgba(6, 182, 212, 0.04);
+  border: 1px solid rgba(6, 182, 212, 0.12);
+  border-radius: 10px;
   position: relative;
+  transition: background var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
 }
 
-.certCard:last-child {
-  border-bottom: none;
+.certCard:hover {
+  background: rgba(6, 182, 212, 0.08);
+  border-color: rgba(6, 182, 212, 0.25);
 }
 
 .certDot {
   position: absolute;
   left: 0;
-  top: 24px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
   background: #06b6d4;
   flex-shrink: 0;
 }
 
 .certContent {
-  margin-left: 24px;
+  margin-left: 0;
 }
 
 .certName {
@@ -792,10 +995,11 @@
   padding: 48px;
 }
 
+/* Issue #9: contactRow grid with proper wrapping */
 .contactRow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
 }
 
 .contactItem {
@@ -811,8 +1015,24 @@
   background: rgba(6, 182, 212, 0.1);
 }
 
+/* Issue #10: Static items visually distinct from interactive ones */
 .contactItemStatic {
   cursor: default;
+  opacity: 0.65;
+  position: relative;
+}
+
+.contactItemStatic .contactIcon {
+  color: var(--text-muted, #94a3b8);
+}
+
+.contactItemStatic .contactLabel {
+  color: var(--text-muted, #94a3b8);
+}
+
+.contactItemStatic .contactValue {
+  font-style: italic;
+  font-size: 0.875rem;
 }
 
 .contactIcon {
@@ -871,6 +1091,34 @@
   margin: 0;
 }
 
+/* Issue #11: Footer CTA diversity — multiple action links */
+.footerActions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.footerLink {
+  font-size: 0.875rem;
+  color: var(--text-muted, #94a3b8);
+  text-decoration: none;
+  transition: color var(--transition, 320ms cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.footerLink:hover {
+  color: #06b6d4;
+}
+
 .footerContent > p {
   font-size: 0.95rem;
   color: var(--text-muted, #94a3b8);
@@ -920,7 +1168,7 @@
 
   .contactRow {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 16px;
   }
 
   .timelineCard {
@@ -929,6 +1177,14 @@
 
   .footer {
     padding: 40px 24px;
+  }
+
+  .eduGrid {
+    max-width: 100%;
+  }
+
+  .certsGrid {
+    grid-template-columns: 1fr;
   }
 }
 
